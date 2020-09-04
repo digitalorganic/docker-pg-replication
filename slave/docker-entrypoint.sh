@@ -18,7 +18,7 @@ done
 echo "host replication all 0.0.0.0/0 md5" >> "$PGDATA/pg_hba.conf"
 
 set -e
-
+echo "createing ${PGDATA}/recovery.conf"
 cat > ${PGDATA}/recovery.conf <<EOF
 standby_mode = on
 primary_conninfo = 'host=$PG_MASTER_HOST port=${PG_MASTER_PORT:-5432} user=$PG_REP_USER password=$PG_REP_PASSWORD'

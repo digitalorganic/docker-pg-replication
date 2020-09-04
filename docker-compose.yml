@@ -1,27 +1,41 @@
 version: "3"
 services:
   pg_master:
-    build: ./master
+    container_name: pgmaster
+    image: do/pgmaster:12
+    build: 
+      context: ./master
+      args: 
+        - PG_DOCKER_BASE=${PG_DOCKER_BASE}
     volumes:
       - pg_data:/var/lib/postgresql/data
     environment:
-      - POSTGRES_USER=hamed
-      - POSTGRES_PASSWORD=123456
-      - POSTGRES_DB=hamed
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_USER}
       - PG_REP_USER=rep
-      - PG_REP_PASSWORD=123456
+      - PG_REP_PASSWORD=${POSTGRES_PASSWORD}
+    ports: 
+      - "5431:5432"
     networks:
       default:
         aliases:
           - pg_cluster
   pg_slave:
-    build: ./slave
+    container_name: pgslave
+    image: do/pgslave:12
+    build: 
+      context: ./slave
+      args: 
+        - PG_DOCKER_BASE=${PG_DOCKER_BASE}
+    ports: 
+      - "5439:5432"
     environment:
-      - POSTGRES_USER=hamed
-      - POSTGRES_PASSWORD=123456
-      - POSTGRES_DB=hamed
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_USER}
       - PG_REP_USER=rep
-      - PG_REP_PASSWORD=123456
+      - PG_REP_PASSWORD=${POSTGRES_PASSWORD}
       - PG_MASTER_HOST=pg_master
     networks:
       default:

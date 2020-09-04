@@ -1,4 +1,5 @@
-FROM postgres:9.6-alpine
+ARG PG_DOCKER_BASE=postgres:12-alpine
+FROM ${PG_DOCKER_BASE}
 
 RUN apk add --update htop
 
