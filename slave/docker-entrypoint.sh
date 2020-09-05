@@ -9,7 +9,8 @@ until ping -c 1 -W 1 ${PG_MASTER_HOST:?missing environment variable. PG_MASTER_H
         echo "Waiting for master to ping..."
         sleep 1s
 done
-until pg_basebackup -h ${PG_MASTER_HOST} -D ${PGDATA} -U ${PG_REP_USER} -vP -W
+# backup and create slot
+until pg_basebackup -h ${PG_MASTER_HOST} -D ${PGDATA} -U ${PG_REP_USER} -P -v  -R -X stream -C -S ${SLAVE_NAME}
     do
         echo "Waiting for master to connect..."
         sleep 1s
@@ -18,11 +19,14 @@ done
 echo "host replication all 0.0.0.0/0 md5" >> "$PGDATA/pg_hba.conf"
 
 set -e
-echo "createing ${PGDATA}/recovery.conf"
-cat > ${PGDATA}/recovery.conf <<EOF
-standby_mode = on
+# no more recovery.conf
+# https://www.tecmint.com/configure-postgresql-streaming-replication-in-centos-8/
+
+cat > ${PGDATA}/postgresql.auto.conf  <<EOF
+
 primary_conninfo = 'host=$PG_MASTER_HOST port=${PG_MASTER_PORT:-5432} user=$PG_REP_USER password=$PG_REP_PASSWORD'
-trigger_file = '/tmp/touch_me_to_promote_to_me_master'
+primary_slot_name = '${SLAVE_NAME}'
+promote_trigger_file = '/tmp/touch_me_to_promote_to_me_master'
 EOF
 chown postgres. ${PGDATA} -R
 chmod 700 ${PGDATA} -R
