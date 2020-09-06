@@ -45,10 +45,12 @@ services:
       - pg_slave_data:/var/lib/postgresql/data
     networks: 
       - pg_cluster
+  
+      
 volumes:
   pg_master_data:
   pg_slave_data:
 
 networks:
   pg_cluster:
-    driver: bridge
+    external: true
