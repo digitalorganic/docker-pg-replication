@@ -45,7 +45,21 @@ services:
       - pg_slave_data:/var/lib/postgresql/data
     networks: 
       - pg_cluster
-  
+
+  pgpool:
+    image: do/pgpool:latest
+    build: 
+      context: ./pgpool
+    depends_on: 
+      - pg_master
+      - pg_slave
+    environment:
+      - PGPOOL_BACKENDS=1:pgmaster:5432,2:pgslave:5432
+    ports:
+      - 5430:5432/tcp
+    networks:
+      - pg_cluster
+        
       
 volumes:
   pg_master_data:
