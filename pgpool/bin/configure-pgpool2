@@ -15,8 +15,8 @@ def pgpool_get_configuration():
 	value = os.getenv('PCP_USER', 'postgres')
 	configuration.update({ 'pcp_user': value })
 	# Get the PCP user password.
-	value = os.getenv('PCP_USER_PASSWORD', 'bettervoice')
-	print('value', value)
+	value = os.getenv('PCP_USER_PASSWORD', 'pcp@password')
+
 	hash = hashlib.md5()
 	hash.update(value.encode('utf-8'))
 	configuration.update({ 'pcp_user_password': hash.hexdigest() })
