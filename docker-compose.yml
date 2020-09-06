@@ -18,10 +18,9 @@ services:
       - PG_REP_PASSWORD=${POSTGRES_PASSWORD}
     ports: 
       - "5431:5432"
-    networks:
-      default:
-        aliases:
-          - pg_cluster
+    networks: 
+      - pg_cluster
+
   pg_slave:
     container_name: pgslave
     image: do/pgslave:12
@@ -44,10 +43,12 @@ services:
       - SLAVE_NAME=s2
     volumes:
       - pg_slave_data:/var/lib/postgresql/data
-    networks:
-      default:
-        aliases:
-          - pg_cluster
+    networks: 
+      - pg_cluster
 volumes:
   pg_master_data:
   pg_slave_data:
+
+networks:
+  pg_cluster:
+    driver: bridge
