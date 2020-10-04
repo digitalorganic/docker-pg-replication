@@ -1,4 +1,4 @@
-ARG PG_DOCKER_BASE=postgres:12-alpine
+ARG PG_DOCKER_BASE=postgres:13-alpine
 FROM ${PG_DOCKER_BASE}
 
 RUN apk add --update htop
