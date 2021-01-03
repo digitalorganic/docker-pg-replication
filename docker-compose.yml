@@ -2,7 +2,7 @@ version: "3"
 services:
   pg_master:
     container_name: pgmaster
-    image: digitalorganic/pgmaster:2.0
+    image: digitalorganic/pgmaster:3.0
     build: 
       context: ./master
       args: 
@@ -23,7 +23,7 @@ services:
 
   pg_slave:
     container_name: pgslave
-    image: digitalorganic/pgslave:2.0
+    image: digitalorganic/pgslave:3.0
     depends_on: 
       - pg_master
     build: 

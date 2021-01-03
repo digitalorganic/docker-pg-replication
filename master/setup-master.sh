@@ -8,6 +8,11 @@ EOSQL
 
 cat >> ${PGDATA}/postgresql.conf <<EOF
 
+shared_preload_libraries = 'pg_stat_statements'
+
+pg_stat_statements.max = 10000
+pg_stat_statements.track = all
+
 wal_level = hot_standby
 archive_mode = on
 archive_command = 'cd .'
@@ -15,3 +20,9 @@ max_wal_senders = 8
 wal_keep_size = 8
 hot_standby = on
 EOF
+# pg stat
+
+psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-EOSQL
+    CREATE EXTENSION pg_stat_statements;
+EOSQL
+
